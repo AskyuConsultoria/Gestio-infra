@@ -102,16 +102,25 @@ resource "aws_network_acl" "private_acl" {
     rule_no    = 100
     protocol   = "tcp"
     action     = "allow"
-    cidr_block = "10.0.0.0/24"
+    cidr_block = "0.0.0.0/0"
     from_port  = 22
     to_port    = 22
+  }
+
+  ingress {
+    rule_no    = 101
+    protocol   = "tcp"
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 443
+    to_port    = 443
   }
 
   ingress {
     rule_no    = 200
     protocol   = "tcp"
     action     = "allow"
-    cidr_block = "10.0.0.0/24"
+    cidr_block = "0.0.0.0/0"
     from_port  = 80
     to_port    = 80
   }
@@ -120,7 +129,7 @@ resource "aws_network_acl" "private_acl" {
     rule_no    = 300
     protocol   = "tcp"
     action     = "allow"
-    cidr_block = "10.0.0.0/24"
+    cidr_block = "0.0.0.0/0"
     from_port  = 443
     to_port    = 443
   }
@@ -129,7 +138,7 @@ resource "aws_network_acl" "private_acl" {
     rule_no    = 400
     protocol   = "tcp"
     action     = "allow"
-    cidr_block = "10.0.0.0/24"
+    cidr_block = "0.0.0.0/0"
     from_port  = 32000
     to_port    = 65535
   }
@@ -268,9 +277,27 @@ resource "aws_instance" "main-public" {
   subnet_id       = aws_subnet.main-public.id
 }
 
+
+data "template_file" "back-conf" {
+  template = file("${path.module}/application.properties.tpl")
+
+  vars = {
+    ipv4_public = aws_instance.main-public.public_ip
+  }
+}
+
+resource "local_file" "application_properties" {
+  content  = data.template_file.back-conf.rendered
+  filename = "${path.module}/application.properties"
+}
+
+
 resource "aws_instance" "main-private" {
   ami           = "ami-04b4f1a9cf54c11d0"
   instance_type = "t2.micro"
+  private_ip = "10.0.1.253"
+
+  # user_data = ""
 
   tags = {
     Name = "instancia-privada"
