@@ -1,1 +1,3 @@
-.terraform\
+.terraform/providers/registry.terraform.io/hashicorp/aws/5.91.0/windows_amd64/terraform-provider-aws_v5.91.0_x5.exe
+.terraform/providers/registry.terraform.io/hashicorp/aws/3.76.1/windows_amd64/terraform-provider-aws_v3.76.1_x5.exe
+.terraform\providers\registry.terraform.io\hashicorp\null\3.2.3\windows_amd64\terraform-provider-null_v3.2.3_x5.exe
